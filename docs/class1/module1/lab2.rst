@@ -1,39 +1,43 @@
-Lab – Install a |bip| |ve| image on a Hypervisor
-------------------------------------------------
+Creating a physical node
+========================
 
-.. TODO:: Needs lab description
+**Create a node**
 
-In the previous lab we learned how to download the |bip| |ve| image.  Now, we
-can install the image onto a hypervisor.
+You need to create a node which you will assign to a pool.
 
-Task – Upload the image to your Hypervisor
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+You want to specify the values for user/pass and validate_certs only once
+but re-use them throughout your tasks.  Use the ``bigip_node`` module.
 
-.. TODO:: Needs task description
+#. Create a playbook ``node.yaml``.
 
-In this task you will upload the image to your hypervisor.
+   - Type ``nano ./playbooks/node.yaml``
+   - Type the following into the ``playbooks/node.yaml`` file.
 
-Follow these steps to complete this task:
 
-.. rst-class:: task-stepsx
+     .. image:: /_static/image013.png
+       :height: 500px
 
-#. Open your hypervisor management console
-#. Figure out how to upload the image
+   - Ctrl x to save file.
 
-   .. ERROR:: These are bad instructions...
+#. Run this playbook.
 
-#. Great!  You're done
+   - Type ``ansible-playbook -i inventory/hosts playbooks/node.yaml``
 
-Task – Start a |bip| |ve| Instance
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   If successful, you should see similar results
 
-.. TODO:: Needs task description
+   .. image:: /_static/image014.png
+       :height: 200px
 
-In this task we will start and instance of |bip| using the image uploaded in
-the previous task.
+#. Verify BIG-IP results.
 
-Follow these steps to complete this task:
+   - Select **Local Traffic -> Nodes**
 
-#. Open your hypervisor management console
-#. Click the |bip| image
-#. Click the 'Start' button (or it's equivalent)
+   .. image:: /_static/image015.png
+       :height: 180px
+
+.. NOTE::
+
+   The ``bigip_node`` module can configure physical device addresses that can
+   later be added to pools. At a minimum, the ``name`` is required. Additionally,
+   either the ``address`` or ``fqdn`` parameters are also required when creating
+   new nodes.

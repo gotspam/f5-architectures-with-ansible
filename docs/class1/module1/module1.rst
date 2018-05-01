@@ -1,10 +1,12 @@
-Module – Installing a BIG-IP Virtual Edition
-=============================================
+Module – Basic |bip| administration with Ansible
+================================================
 
-.. TODO:: Needs module description
+This module will include exercises to do basic administrative tasks on the BIG-IP.
 
-In this module you will learn how to install a |f5| |bip| |ve| into your
-environment.
+The following recipes target a common subset of work that people
+typically undertake when configuring BIG-IP devices. Among the
+various recipes included in this chapter are means to create pools
+and virtual servers.
 
 .. toctree::
    :maxdepth: 1

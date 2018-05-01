@@ -1,10 +1,8 @@
-Module – Installing a BIG-IP Appliance
-======================================
+Module – Working with Ansible variables
+=======================================
 
-.. TODO:: Needs module description
-
-In this module you will learn how to install a |f5| |bip| Appliance into your
-datacenter.
+In this module you will learn how to leverage Ansible variables to secure
+sensitive information and prompt for user input.
 
 .. toctree::
    :maxdepth: 1

@@ -1,49 +1,62 @@
-Lab – Download the |bip| |ve| Image
------------------------------------
+Creating a pool on BIG-IP
+=========================
 
-.. TODO:: Needs lab description
+You need to create a pool on a BIG-IP.  Use the ``bigip_pool`` module.
 
-This lab will teach you how to download the |bip| |ve| image to your system.
+**Create a pool on a BIG-IP**
 
-Task – Open a Web Browser
-~~~~~~~~~~~~~~~~~~~~~~~~~
+#. Create a playbook ``pool.yaml``.
 
-.. TODO:: Needs task description
+   - Type ``nano ./playbooks/pool.yaml``
+   - Type the following into the ``playbooks/pool.yaml`` file.
 
-In this task you will open a web browser and navigate to the |f5| Downloads
-site.
 
-.. NOTE:: An account is required to download software.  You can create one at
-   https://login.f5.com/resource/registerEmail.jsp
+     .. image:: /_static/image010.png
+       :height: 300px
 
-Follow these steps to complete this task:
+   - Ctrl x to save file.
 
-#. Open your web browser
-#. Navigate to https://downloads.f5.com
-#. Login with your username and password.
-#. After logging in you should see the following window:
+#. Run this playbook.
 
-   |image1|
+   - Type ``ansible-playbook -i inventory/hosts playbooks/pool.yaml``
 
-Task – Download the Image
-~~~~~~~~~~~~~~~~~~~~~~~~~
+   If successful, you should see similar results
 
-.. TODO:: Needs task description
+   .. image:: /_static/image011.png
+       :height: 180px
 
-In this task we will download the |f5| |bip| |ve| image to your system
+#. Verify BIG-IP results.
 
-Follow these steps to complete this task:
+   - Login to BIG-IP Admin GUI with username: ``admin`` and password: ``admin``
+   - Select **Local Traffic -> Pools**
 
-#. Click the 'Find a Download' button.
+   .. image:: /_static/image012.png
+       :height: 180px
+       
+.. NOTE::
 
-   .. image:: /_static/image002.png
+   The ``bigip_pool`` module can configure a number of attributes for a pool.
+   At a minimum, the ``name`` is required.
 
-#. Click the link that contains the |bip| TMOS software version you would like
-   to download.
+   This module is idempotent. Therefore, you can run it over and over again and
+   so-long as no settings have been changed, this module will report no changes.
 
-   .. IMPORTANT:: Be sure to click a link that has "\ |ve|" in the name
+   Notice how we also included the credentials to log into the device as arguments
+   to the task. This is *not* the preferred way to do this, but it illustrates a
+   way for beginners to get started without needing to know a less obvious way to
+   specify these values.
 
-#. Find the image appropriate for your hypervisor
-#. Download the image and save it to you local system
+   The module has several more options, all of which can be seen at `this link`_.
+   I have reproduced them below. These are relevant to the 2.5 release of Ansible.
 
-.. |image1| image:: /_static/image001.png
+   * ``description``
+   * ``lb_method``
+   * ``monitor_type``
+   * ``monitors``
+   * ``name``
+   * ``quorum``
+   * ``reselect_tries``
+   * ``service_down_action``
+   * ``slow_ramp_time``
+
+   .. _this link: http://docs.ansible.com/ansible/latest/bigip_pool_module.html

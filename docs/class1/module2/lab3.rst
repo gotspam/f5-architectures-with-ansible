@@ -1,15 +1,17 @@
-Prompting for user input
-========================
+Sending arguments to your playbook
+==================================
 
-You need to prompt the user to provide a password to Ansible.  Use
-the ``vars_prompt`` in your Playbook.
+You need to specify “vars” values automatically, such as via a command line.
+Passing variables using ``extra-vars`` will override playbook variables.
+Use the ``-e``, or ``--extra-vars`` argument of ``ansible-playbook``
 
-**Run a BIG-IP tmsh command.**
 
-#. Create a playbook ``cmd.yaml``.
+**Create pool member state playbook**
 
-   - Type ``nano ./playbooks/cmd.yaml``
-   - Type the following into the ``playbooks/cmd.yaml`` file.
+#. Create a playbook ``pmstate.yaml``.
+
+   - Type ``nano ./playbooks/pmstate.yaml``
+   - Type the following into the ``playbooks/pmstate.yaml`` file.
 
 
    .. code::
@@ -24,33 +26,27 @@ the ``vars_prompt`` in your Playbook.
       vars:
         validate_certs: no
         server: 10.1.1.245
-
-      vars_prompt:
-        - name: "username"
-          prompt: "Enter BIG-IP username"
-          private: yes
-        - name: "password"
-          prompt: "Enter BIG-IP password"
-          private: yes
+        username: "{{ bigip_user }}"
+        password: "{{ bigip_pass }}"
+        pools: ""
+        pmhost: ""
+        pmport: ""
+        session_state: "disabled"
+        monitor_state: "disabled"
 
       task:
-        - name: View system version and LTM configuration
-          bigip_command:
-            commands:
-              - list /ltm virtual all
-              - list /ltm pool all
-              - list /ltm node all
-            server: "{{ server }}"
-            password: "{{ password }}"
-            user: "{{ username }}"
-            validate_certs: "{{ validate_certs }}"
-          register: result
-
-        - debug: msg="{{ result.stdout_lines }}"
+        - name: Modify pool member state
+          bigip_pool_member:
+            state: present
+            session_state: "{{ session_state }}"
+            monitor_state: "{{ monitor_state }}"
+            host: "{{ pmhost }}"
+            port: "{{ pmport }}"
+            pool: "{{ pool }}"
 
 #. Run this playbook.
 
-   - Type ``ansible-playbook playbooks/cmd.yaml``
+   - Type ``ansible-playbook playbooks/pmstate.yaml -e @creds.yaml -e @creds.yml --ask-vault-pass -e pool="app1_pl" -e pmhost="10.1.20.12" -e pmport="80"``
 
    You will be prompted to enter username and password before executing the
    playbook.  If successful, you should see config for virtual servers, pools and nodes.
