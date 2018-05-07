@@ -7,7 +7,7 @@ You need to create a pool on a BIG-IP.  Use the ``bigip_pool`` module.
 
 #. Create a playbook ``pool.yaml``.
 
-   - Type ``nano ./playbooks/pool.yaml``
+   - Type ``nano playbooks/pool.yaml``
    - Type the following into the ``playbooks/pool.yaml`` file.
 
 
@@ -18,7 +18,7 @@ You need to create a pool on a BIG-IP.  Use the ``bigip_pool`` module.
 
 #. Run this playbook.
 
-   - Type ``ansible-playbook -i inventory/hosts playbooks/pool.yaml``
+   - Type ``ansible-playbook playbooks/pool.yaml``
 
    If successful, you should see similar results
 
@@ -32,7 +32,7 @@ You need to create a pool on a BIG-IP.  Use the ``bigip_pool`` module.
 
    .. image:: /_static/image012.png
        :height: 180px
-       
+
 .. NOTE::
 
    The ``bigip_pool`` module can configure a number of attributes for a pool.

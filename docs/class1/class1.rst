@@ -9,8 +9,6 @@ This class covers the following topics:
 - Slightly more advanced Ansible usage
 - Debugging Ansible problems
 
-**Lab – Topology**
-
 Expected time to complete: **3 hours**
 
 .. toctree::

@@ -1,5 +1,5 @@
-Create a Virtual Server
-=======================
+4Create a Virtual Server
+========================
 
 **Create a virtual server and assign pool**
 
@@ -8,7 +8,7 @@ module.
 
 #. Create a playbook ``vs.yaml``.
 
-   - Type ``nano playbooks/vs.yaml``
+   - Type ``nano ./playbooks/vs.yaml``
    - Type the following into the ``playbooks/vs.yaml`` file.
 
 
@@ -19,7 +19,7 @@ module.
 
 #. Run this playbook.
 
-   - Type ``ansible-playbook playbooks/vs.yaml``
+   - Type ``ansible-playbook -i inventory/hosts playbooks/vs.yaml``
 
    If successful, you should see similar results
 

@@ -1,5 +1,5 @@
-Adding pool members to a pool
-=============================
+2Adding pool members to a pool
+==============================
 
 **Assign pool members to a pool**
 
@@ -8,7 +8,7 @@ You will select a node which you will assign to a pool ``app1_pl``.  Use the
 
 #. Create a playbook ``member.yaml``.
 
-   - Type ``nano playbooks/member.yaml``
+   - Type ``nano ./playbooks/member.yaml``
 
    - Type the following into the ``playbooks/member.yaml`` file.
 
@@ -19,7 +19,7 @@ You will select a node which you will assign to a pool ``app1_pl``.  Use the
 
 #. Run this playbook.
 
-   - Type ``ansible-playbook playbooks/member.yaml``
+   - Type ``ansible-playbook -i inventory/hosts playbooks/member.yaml``
 
    If successful, you should see similar results
 
@@ -35,7 +35,7 @@ You will select a node which you will assign to a pool ``app1_pl``.  Use the
 
 #. Add another pool member to pool ``app1_pl``.
 
-   - Type ``nano playbooks/member.yaml``
+   - Type ``nano ./playbooks/member.yaml``
    - Add ``node-2`` as shown in the image below.
 
    .. image:: /_static/image019.png
@@ -45,7 +45,7 @@ You will select a node which you will assign to a pool ``app1_pl``.  Use the
 
 #. Run this playbook.
 
-   - Type ``ansible-playbook playbooks/member.yaml``
+   - Type ``ansible-playbook -i inventory/hosts playbooks/member.yaml``
 
    If successful, you should see similar results
 

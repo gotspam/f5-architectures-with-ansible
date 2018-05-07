@@ -1,5 +1,5 @@
-Creating a physical node
-========================
+Imperative - Create VS, Pool and Members
+========================================
 
 **Create a node**
 
@@ -10,7 +10,7 @@ but re-use them throughout your tasks.  Use the ``bigip_node`` module.
 
 #. Create a playbook ``node.yaml``.
 
-   - Type ``nano playbooks/node.yaml``
+   - Type ``nano ./playbooks/node.yaml``
    - Type the following into the ``playbooks/node.yaml`` file.
 
 
@@ -21,7 +21,7 @@ but re-use them throughout your tasks.  Use the ``bigip_node`` module.
 
 #. Run this playbook.
 
-   - Type ``ansible-playbook playbooks/node.yaml``
+   - Type ``ansible-playbook -i inventory/hosts playbooks/node.yaml``
 
    If successful, you should see similar results
 

@@ -1,14 +1,14 @@
 Prompting for user input
 ========================
 
-You need to prompt the user to provide a password to Ansible.  Use
+You will create a playbook to prompt the user to provide credentials.  Use
 the ``vars_prompt`` in your Playbook.
 
 **Run a BIG-IP tmsh command.**
 
 #. Create a playbook ``cmd.yaml``.
 
-   - Type ``nano ./playbooks/cmd.yaml``
+   - Type ``nano playbooks/cmd.yaml``
    - Type the following into the ``playbooks/cmd.yaml`` file.
 
 

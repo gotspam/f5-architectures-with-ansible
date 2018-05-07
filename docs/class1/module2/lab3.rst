@@ -6,19 +6,19 @@ Passing variables using ``extra-vars`` will override playbook variables.
 Use the ``-e``, or ``--extra-vars`` argument of ``ansible-playbook``
 
 
-**Create pool member state playbook**
+**Create pool member forced offline playbook**
 
-#. Create a playbook ``pmstate.yaml``.
+#. Create a playbook ``pmoff.yaml``.
 
-   - Type ``nano ./playbooks/pmstate.yaml``
-   - Type the following into the ``playbooks/pmstate.yaml`` file.
+   - Type ``nano playbooks/pmoff.yaml``
+   - Type the following into the ``playbooks/pmoff.yaml`` file.
 
 
    .. code::
 
     ---
 
-    - name: "Run a tmsh command"
+    - name: "Pool member offline"
       hosts: bigips
       gather_facts: False
       connection: local
@@ -44,29 +44,83 @@ Use the ``-e``, or ``--extra-vars`` argument of ``ansible-playbook``
             port: "{{ pmport }}"
             pool: "{{ pool }}"
 
-#. Run this playbook.
+#. Run this playbook enable pool member.
 
-   - Type ``ansible-playbook playbooks/pmstate.yaml -e @creds.yaml -e @creds.yml --ask-vault-pass -e pool="app1_pl" -e pmhost="10.1.20.12" -e pmport="80"``
+   - Type ``ansible-playbook playbooks/pmoff.yaml -e @creds.yaml --ask-vault-pass -e pool="app1_pl" -e pmhost="10.1.20.12" -e pmport="80"``
 
    You will be prompted to enter username and password before executing the
-   playbook.  If successful, you should see config for virtual servers, pools and nodes.
+   playbook.
 
+#. Verify if pool member 10.1.20.12 is ``forced offline``
+
+   - Select ``Local Traffic -> Pools -> Pool Members -> app1_pl``
+
+**Create pool member enable playbook**
+
+#. Create a playbook ``pmena.yaml``.
+
+   - Type ``nano ./playbooks/pmena.yaml``
+   - Type the following into the ``playbooks/pmena.yaml`` file.
+
+
+   .. code::
+
+    ---
+
+    - name: "Pool member enable"
+      hosts: bigips
+      gather_facts: False
+      connection: local
+
+      vars:
+        validate_certs: no
+        server: 10.1.1.245
+        username: "{{ bigip_user }}"
+        password: "{{ bigip_pass }}"
+        pools: ""
+        pmhost: ""
+        pmport: ""
+        session_state: "enabled"
+        monitor_state: "enabled"
+
+      task:
+        - name: Modify pool member state
+          bigip_pool_member:
+            state: present
+            session_state: "{{ session_state }}"
+            monitor_state: "{{ monitor_state }}"
+            host: "{{ pmhost }}"
+            port: "{{ pmport }}"
+            pool: "{{ pool }}"
+
+#. Run this playbook enable pool member.
+
+   - Type ``ansible-playbook playbooks/pmena.yaml -e @creds.yaml --ask-vault-pass -e pool="app1_pl" -e pmhost="10.1.20.12" -e pmport="80"``
+
+   You will be prompted to enter username and password before executing the
+   playbook.
+
+#. Verify if pool member 10.1.20.12 is ``enabled``
+
+   - Select ``Local Traffic -> Pools -> Pool Members -> app1_pl``
 
    .. NOTE::
 
-     Prompting is a great way to get input from the user. It can function in both
-     an interactive, and non-interactive way.
+     This method of specifying values is not reserved for credentials.
 
-     The ``bigip_command`` module is what we recommend for all situations where you
-     need to do something that a current module does not support.
+     In most cases, it **should not** be used for credentials in fact. This is
+     because the Ansible command (including the extra arguments) will show in
+     the running process list of your Ansible controller.
 
-     This module will **always** warn you when you use it for things that change
-     configuration. These warnings will inform you to file an issue on our Github
-     Issue tracker for a feature enhancement.
+     The more common situations are when you are prompting for specific configuration
+     related to something on your network. For example, your Playbook may be flexible
+     enough to take a given ``region`` or ``cell``.
 
-     Ultimately, the goal we want to get to is to have a suite of modules that
-     meets all the needs of customers that use Ansible. Since that is not yet possible,
-     the ``bigip_command`` is there to accommodate.
+     This would look like the following
 
-     This module can also be used over SSH, but password SSH is the only method known
-     to work at this time.
+     ::
+
+      $ ansible-playbook -i inventory/hosts bootstrap.yaml -e "region=ord cell=c0006"
+
+      The Playbook would not need to change, but you could continually provide values to
+      variables in the Playbook to keep from writing them into the actual Playbook itself.
