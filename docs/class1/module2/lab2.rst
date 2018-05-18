@@ -56,7 +56,7 @@ The `ansible-vault` command has three subcommands that are frequently used.
         username: "{{ bigip_user }}"
         password: "{{ bigip_pass }}"
 
-      task:
+      tasks:
         - name: View system version and LTM configuration
           bigip_command:
             commands:

@@ -33,7 +33,7 @@ the ``vars_prompt`` in your Playbook.
           prompt: "Enter BIG-IP password"
           private: yes
 
-      task:
+      tasks:
         - name: View system version and LTM configuration
           bigip_command:
             commands:

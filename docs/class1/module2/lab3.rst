@@ -24,22 +24,20 @@ Use the ``-e``, or ``--extra-vars`` argument of ``ansible-playbook``
       connection: local
 
       vars:
-        validate_certs: no
-        server: 10.1.1.245
-        username: "{{ bigip_user }}"
-        password: "{{ bigip_pass }}"
         pools: ""
         pmhost: ""
         pmport: ""
-        session_state: "disabled"
-        monitor_state: "disabled"
+        sstate: "disabled"
+        mstate: "disabled"
+
+      environment: "{{ bigip_env }}"
 
       task:
         - name: Modify pool member state
           bigip_pool_member:
             state: present
-            session_state: "{{ session_state }}"
-            monitor_state: "{{ monitor_state }}"
+            session_state: "{{ sstate }}"
+            monitor_state: "{{ mstate }}"
             host: "{{ pmhost }}"
             port: "{{ pmport }}"
             pool: "{{ pool }}"
@@ -59,7 +57,7 @@ Use the ``-e``, or ``--extra-vars`` argument of ``ansible-playbook``
 
 #. Create a playbook ``pmena.yaml``.
 
-   - Type ``nano ./playbooks/pmena.yaml``
+   - Type ``nano playbooks/pmena.yaml``
    - Type the following into the ``playbooks/pmena.yaml`` file.
 
 
@@ -73,22 +71,20 @@ Use the ``-e``, or ``--extra-vars`` argument of ``ansible-playbook``
       connection: local
 
       vars:
-        validate_certs: no
-        server: 10.1.1.245
-        username: "{{ bigip_user }}"
-        password: "{{ bigip_pass }}"
         pools: ""
         pmhost: ""
         pmport: ""
-        session_state: "enabled"
-        monitor_state: "enabled"
+        sstate: "enabled"
+        mstate: "enabled"
 
-      task:
+      environment: "{{ bigip_env }}"
+
+      tasks:
         - name: Modify pool member state
           bigip_pool_member:
             state: present
-            session_state: "{{ session_state }}"
-            monitor_state: "{{ monitor_state }}"
+            session_state: "{{ sstate }}"
+            monitor_state: "{{ mstate }}"
             host: "{{ pmhost }}"
             port: "{{ pmport }}"
             pool: "{{ pool }}"

@@ -1,43 +1,65 @@
-Imperative - Create VS, Pool and Members
-========================================
+Declarative - Create VS, Pool and Members
+=========================================
 
-**Create a node**
+You will create a playbook to deploy VS, Pools and associated Members using iApps.
 
-You need to create a node which you will assign to a pool.
+**Create service playbook using iApp**
 
-You want to specify the values for user/pass and validate_certs only once
-but re-use them throughout your tasks.  Use the ``bigip_node`` module.
+#. Create a playbook ``iapp.yaml``.
 
-#. Create a playbook ``node.yaml``.
+   - Type ``nano playbooks/iapp.yaml``
+   - Type the following into the ``playbooks/iapp.yaml`` file.
 
-   - Type ``nano ./playbooks/node.yaml``
-   - Type the following into the ``playbooks/node.yaml`` file.
+   .. code::
 
+    ---
 
-     .. image:: /_static/image013.png
-       :height: 500px
+    - name: "Declarative: Deploy / teardown web app"
+      hosts: bigips
+      gather_facts: False
+      connection: local
+
+      vars:
+        service_name: ""
+        service_ip: ""
+        service_group: ""
+        state: "present"
+
+      environment: "{{ bigip_env }}"
+
+      tasks:
+        - import_tasks: getsl.yaml
+          when: state == "absent"
+
+        - name: Check if {{ service_name }} is deployed
+          meta: end_play
+          when: 'state == "absent" and service_name not in (service_list.content|from_json)["items"]'
+
+        - name: Build POST body
+          template: src=f5.http.j2 dest=./f5.http.yaml
+
+        - name: Adjust an iApp
+          uri:
+            url: "https://{{ inventory_hostname }}/mgmt/tm/cloud/services/iapp/{{ service_name }}"
+            method: "{{ (state == 'present') | ternary('POST', 'DELETE') }}"
+            body: "{{ (lookup('template','f5.http.yaml') | from_yaml) }}"
+            body_format: json
+            user: "{{ bigip_user }}"
+            password: "{{ bigip_pass }}"
+            validate_certs: no
+
 
    - Ctrl x to save file.
 
 #. Run this playbook.
 
-   - Type ``ansible-playbook -i inventory/hosts playbooks/node.yaml``
+   - Type ``ansible-playbook playbooks/iapp.yaml -e creds.yaml --ask-vault-pass -e service_name="app4" -e service_ip="10.1.10.40" -e service_group="appservers"``
 
    If successful, you should see similar results
 
-   .. image:: /_static/image014.png
-       :height: 200px
-
-#. Verify BIG-IP results.
-
-   - Select **Local Traffic -> Nodes**
-
-   .. image:: /_static/image015.png
+   .. image:: /_static/image011.png
        :height: 180px
 
-.. NOTE::
+#. Run this playbook to teardown.
 
-   The ``bigip_node`` module can configure physical device addresses that can
-   later be added to pools. At a minimum, the ``name`` is required. Additionally,
-   either the ``address`` or ``fqdn`` parameters are also required when creating
-   new nodes.
+   - Type ``ansible-playbook playbooks/iapp.yaml -e creds.yaml --ask-vault-pass -e service_name="app4" -e service_ip="10.1.10.40" -e service_group="appservers" -e state="absent"``
