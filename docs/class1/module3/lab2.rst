@@ -53,7 +53,7 @@ You will create a playbook to deploy VS, Pools and associated Members using iApp
 
 #. Run this playbook.
 
-   - Type ``ansible-playbook playbooks/iapp.yaml -e creds.yaml --ask-vault-pass -e service_name="app4" -e service_ip="10.1.10.40" -e service_group="appservers"``
+   - Type ``ansible-playbook playbooks/iapp.yaml -e @creds.yaml --ask-vault-pass -e service_name="app4" -e service_ip="10.1.10.40" -e service_group="appservers"``
 
    If successful, you should see similar results
 
@@ -62,4 +62,4 @@ You will create a playbook to deploy VS, Pools and associated Members using iApp
 
 #. Run this playbook to teardown.
 
-   - Type ``ansible-playbook playbooks/iapp.yaml -e creds.yaml --ask-vault-pass -e service_name="app4" -e service_ip="10.1.10.40" -e service_group="appservers" -e state="absent"``
+   - Type ``ansible-playbook playbooks/iapp.yaml -e @creds.yaml --ask-vault-pass -e service_name="app4" -e service_ip="10.1.10.40" -e service_group="appservers" -e state="absent"``

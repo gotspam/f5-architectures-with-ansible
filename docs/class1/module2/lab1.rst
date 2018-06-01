@@ -54,6 +54,8 @@ the ``vars_prompt`` in your Playbook.
 
    You will be prompted to enter username and password before executing the
    playbook.  If successful, you should see config for virtual servers, pools and nodes.
+   username: ``admin``
+   password: ``admin``
 
 
    .. NOTE::

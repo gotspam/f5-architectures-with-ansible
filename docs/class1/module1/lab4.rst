@@ -28,7 +28,7 @@ module.
 
 #. Verify BIG-IP results.
 
-   - Select **Local Traffic -> Pools -> app1_pl -> Members**
+   - Select **Local Traffic -> Virtual Servers -> Virtual Server List**
 
    .. image:: /_static/image023.png
        :height: 200px

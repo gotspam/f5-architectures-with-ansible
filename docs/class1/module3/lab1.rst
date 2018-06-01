@@ -93,7 +93,7 @@ You will create a consolidated playbook to deploy VS, Pools and associated Membe
 
 #. Run this playbook.
 
-   - Type ``ansible-playbook -e creds.yaml --ask-vault-pass playbooks/app.yaml``
+   - Type ``ansible-playbook -e @creds.yaml --ask-vault-pass playbooks/app.yaml``
 
    If successful, you should see similar results
 
@@ -102,4 +102,14 @@ You will create a consolidated playbook to deploy VS, Pools and associated Membe
 
 #. Run this playbook to teardown app.
 
-   - Type ``ansible-playbook -e creds.yaml --ask-vault-pass playbooks/app.yaml -e state="absent"``
+   - Type ``ansible-playbook -e @creds.yaml --ask-vault-pass playbooks/app.yaml -e state="absent"``
+
+   .. NOTE::
+
+     Setting the ``state="absent"`` will delete the object.  For example within
+     the ``bigip_virtual_server`` module for virtual server state.
+     
+     If ``absent``, delete the virtual server if it exists.
+     If ``present``, create the virtual server and enable it.
+     If ``enabled``, enable the virtual server if it exists.
+     If ``disabled``, create the virtual server if needed, and set state to disabled.

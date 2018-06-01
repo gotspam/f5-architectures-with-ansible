@@ -36,7 +36,7 @@ You will select a node which you will assign to a pool ``app1_pl``.  Use the
 #. Add another pool member to pool ``app1_pl``.
 
    - Type ``nano playbooks/member.yaml``
-   - Add ``node-2`` as shown in the image below.
+   - Add node ``10.1.20.12`` as shown in the image below.
 
    .. image:: /_static/image019.png
        :height: 100px

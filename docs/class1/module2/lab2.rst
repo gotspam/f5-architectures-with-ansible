@@ -14,11 +14,12 @@ The `ansible-vault` command has three subcommands that are frequently used.
    - Type ``ansible-vault create creds.yaml``
 
    Use ``create`` to create the initial files that will be vault encrypted.
-   Vault will prompt you for a password.  It will then open up a text editor
+   Vault will prompt you for a password. For the purposes of this lab enter
+   ``password`` . It will then open up a text editor (vi)
    for you to write data to it. Data of any form can be written, but text is
    usually the format that is used.
 
-   - Enter the folloiwng in the editor and save.
+   - Type ``i`` then enter the following in the editor.
 
    .. code::
 
@@ -26,8 +27,8 @@ The `ansible-vault` command has three subcommands that are frequently used.
      bigip_pass: "admin"
 
 
-   When you save and quit the editor, the file will automatically be encrypted
-   for you.
+   Type ``esc key`` then ``wq!`` to save and quit the editor, the file will
+   automatically be encrypted for you.
 
    - Type ``cat creds.yaml`` to ensure file is encrypted.
 
@@ -36,10 +37,10 @@ The `ansible-vault` command has three subcommands that are frequently used.
    .. image:: /_static/image024.png
        :height: 140px
 
-#. Copy ``/playbooks/cmd.yaml`` to ``/playbooks/cmd1.yaml`` and modify.
+#. Copy ``playbooks/cmd.yaml`` to ``playbooks/cmd1.yaml`` and modify.
 
-   - Type ``cp /playbooks/cmd.yaml /playbooks/cmd1.yaml``
-   - Type ``nano /playbooks/cmd1.yaml``
+   - Type ``cp playbooks/cmd.yaml playbooks/cmd1.yaml``
+   - Type ``nano playbooks/cmd1.yaml``
 
    .. code::
 

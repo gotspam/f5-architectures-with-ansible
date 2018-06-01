@@ -1,7 +1,7 @@
 Getting Started
 ---------------
 
-The purpose of this guide is to provide a sampling of hands-on exercises to better understand deployment of BIG-IP in Azure.
+The purpose of this guide is to provide a sampling of hands-on exercises to better understand deployment of BIG-IP using Ansible.
 
 Lab Topology
 ~~~~~~~~~~~~
@@ -51,7 +51,7 @@ Connect to lab
         - **External:** 10.1.10.150
         - **Internal:** 10.1.20.150
       - - ``root``/``password``
-    * - BIG-IP1
+    * - BIG-IP01
       - - **Management:** 10.1.1.245
         - **External:** 10.1.10.245
         - **Internal:** 10.1.20.245
