@@ -32,7 +32,7 @@ Use the ``-e``, or ``--extra-vars`` argument of ``ansible-playbook``
 
       environment: "{{ bigip_env }}"
 
-      task:
+      tasks:
         - name: Modify pool member state
           bigip_pool_member:
             state: present

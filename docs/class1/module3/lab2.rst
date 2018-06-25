@@ -60,6 +60,10 @@ You will create a playbook to deploy VS, Pools and associated Members using iApp
    .. image:: /_static/image011.png
        :height: 180px
 
+   .. hint::
+
+      Due to our lab environment, you may encounter a timeout issue.  If so, please run playbook a 2nd time and it should complete correctly.
+
 #. Run this playbook to teardown.
 
    - Type ``ansible-playbook playbooks/iapp.yaml -e @creds.yaml --ask-vault-pass -e service_name="app4" -e service_ip="10.1.10.40" -e service_group="appservers" -e state="absent"``
