@@ -41,3 +41,7 @@ but re-use them throughout your tasks.  Use the ``bigip_node`` module.
    later be added to pools. At a minimum, the ``name`` is required. Additionally,
    either the ``address`` or ``fqdn`` parameters are also required when creating
    new nodes.
+
+   The module has several more options, all of which can be seen at `this link`_.
+
+   .. _this link: https://docs.ansible.com/ansible/latest/modules/bigip_node_module.html

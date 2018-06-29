@@ -43,3 +43,7 @@ module.
   This module is idempotent. Therefore, you can run it over and over again
   and so-long as no settings have been changed, this module will report no
   changes.
+
+  The module has several more options, all of which can be seen at `this link`_.
+
+  .. _this link: https://docs.ansible.com/ansible/latest/modules/bigip_virtual_server_module.html

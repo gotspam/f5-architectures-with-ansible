@@ -16,6 +16,11 @@ You need to create a pool on a BIG-IP.  Use the ``bigip_pool`` module.
 
    - Ctrl x to save file.
 
+   .. HINT::
+
+      If you encounter syntax errors you can troubleshoot issues and/or the use of an online editor such as http://www.yamllint.com/
+
+
 #. Run this playbook.
 
    - Type ``ansible-playbook playbooks/pool.yaml``

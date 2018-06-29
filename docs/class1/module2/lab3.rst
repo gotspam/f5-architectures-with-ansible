@@ -112,11 +112,11 @@ Use the ``-e``, or ``--extra-vars`` argument of ``ansible-playbook``
      related to something on your network. For example, your Playbook may be flexible
      enough to take a given ``region`` or ``cell``.
 
-     This would look like the following
+     Bonus playbook: - modify sstate and mstate to "" and pass the variables via cli to achieve various states.
 
      ::
 
-      $ ansible-playbook -i inventory/hosts bootstrap.yaml -e "region=ord cell=c0006"
+      $ ansible-playbook playbooks/pmena.yaml -e @creds.yaml --ask-vault-pass -e pool="app1_pl" -e pmhost="10.1.20.12" -e pmport="80" -e mstate="enabled" -e sstate="disabled"
 
       The Playbook would not need to change, but you could continually provide values to
       variables in the Playbook to keep from writing them into the actual Playbook itself.

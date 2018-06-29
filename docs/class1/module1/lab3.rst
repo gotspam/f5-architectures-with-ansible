@@ -28,7 +28,7 @@ You will select a node which you will assign to a pool ``app1_pl``.  Use the
 
 #. Verify BIG-IP results.
 
-   - Select **Local Traffic -> Nodes**
+   - Select **Local Traffic -> Pools -> app1_p1 -> Members**
 
    .. image:: /_static/image018.png
        :height: 180px
@@ -62,3 +62,7 @@ You will select a node which you will assign to a pool ``app1_pl``.  Use the
 
     At a minimum, the ``name`` is required. Additionally, the ``host`` is required
     when creating new pool members.
+
+    The module has several more options, all of which can be seen at `this link`_.
+
+    .. _this link: https://docs.ansible.com/ansible/latest/modules/bigip_pool_member_module.html

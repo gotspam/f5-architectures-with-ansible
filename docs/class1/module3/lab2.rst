@@ -1,69 +1,111 @@
-Declarative - Create VS, Pool and Members
-=========================================
+Imperative - Create VS, Pool and Members using seed file
+========================================================
 
-You will create a playbook to deploy VS, Pools and associated Members using iApps.
+You will create a consolidated playbook to deploy VS, Pools and associated Members.
 
-**Create service playbook using iApp**
+**Create consolidated playbook**
 
-#. Create a playbook ``iapp.yaml``.
+#. Create a playbook ``appseed.yaml``.
 
-   - Type ``nano playbooks/iapp.yaml``
-   - Type the following into the ``playbooks/iapp.yaml`` file.
+   - Type ``nano playbooks/app.yaml``
+   - Type the following into the ``playbooks/appseed.yaml`` file.
 
    .. code::
 
     ---
 
-    - name: "Declarative: Deploy / teardown web app"
+    - name: "Imperative: Deploy / teardown a web app (VS, pool, nodes)"
       hosts: bigips
       gather_facts: False
       connection: local
+      vars_files:
+        - ../vars/appseedinfo.yaml
 
       vars:
-        service_name: ""
-        service_ip: ""
-        service_group: ""
         state: "present"
 
       environment: "{{ bigip_env }}"
 
       tasks:
-        - import_tasks: getsl.yaml
-          when: state == "absent"
+        - name: Adjust virtual server
+          bigip_virtual_server:
+            name: "{{ vsname }}"
+            destination: "{{ vsip }}"
+            port: "{{ vsport }}"
+            description: "Web App"
+            snat: "Automap"
+            all_profiles:
+              - "tcp-lan-optimized"
+              - "clientssl"
+              - "http"
+              - "analytics"
+            state: "{{ state }}"
 
-        - name: Check if {{ service_name }} is deployed
-          meta: end_play
-          when: 'state == "absent" and service_name not in (service_list.content|from_json)["items"]'
+        - name: Adjust a VS
+          bigip_virtual_server:
+            name: "{{ vs_name }}"
+            destination: "{{ vs_ip }}"
+            port: "{{ vs_port }}"
+            snat: "{{ vs_snat }}"
+            all_profiles:
+              - "tcp-lan-optimized"
+              - "http"
+              - "analytics"
+            state: "{{ state }}"
 
-        - name: Build POST body
-          template: src=f5.http.j2 dest=./f5.http.yaml
+        - name: Adjust a pool
+          bigip_pool:
+            name: "{{ pl_name }}"
+            monitors: "{{ pl_monitor }}"
+            lb_method: "{{ pl_lb }}"
+            state: "{{ state }}"
 
-        - name: Adjust an iApp
-          uri:
-            url: "https://{{ inventory_hostname }}/mgmt/tm/cloud/services/iapp/{{ service_name }}"
-            method: "{{ (state == 'present') | ternary('POST', 'DELETE') }}"
-            body: "{{ (lookup('template','f5.http.yaml') | from_yaml) }}"
-            body_format: json
-            user: "{{ bigip_user }}"
-            password: "{{ bigip_pass }}"
-            validate_certs: no
+        - name: Add nodes
+          bigip_node:
+            name: "{{ item.name }}"
+            host: "{{ item.host }}"
+            state: "{{ state }}"
+          loop:
+            - { name: "{{ nd_ip1 }}", host: "{{ nd_ip1 }}" }
+            - { name: "{{ nd_ip2 }}", host: "{{ nd_ip2 }}" }
 
+        - name: Add nodes to pool
+          bigip_pool_member:
+            host: "{{ item.host }}"
+            port: "{{ nd_port }}"
+            pool: "{{ pl_name }}"
+            state: "{{ state }}"
+          loop:
+            - { host: "{{ nd_ip1 }}" }
+            - { host: "{{ nd_ip2 }}" }
+          when: state == "present"
+
+        - name: Update a VS
+          bigip_virtual_server:
+            name: "{{ vs_name }}"
+            pool: "{{ pl_name }}"
+            state: "{{ state }}"
+          when: state == "present"
 
    - Ctrl x to save file.
 
 #. Run this playbook.
 
-   - Type ``ansible-playbook playbooks/iapp.yaml -e @creds.yaml --ask-vault-pass -e service_name="app4" -e service_ip="10.1.10.40" -e service_group="appservers"``
+   - Type ``ansible-playbook -e @creds.yaml --ask-vault-pass playbooks/appseed.yaml``
 
-   If successful, you should see similar results
-
-   .. image:: /_static/image011.png
-       :height: 180px
+#. Verify results in BIG-IP GUI.
 
    .. hint::
 
-      Due to our lab environment, you may encounter a timeout issue.  If so, please run playbook a 2nd time and it should complete correctly.
+     You should see app3_vs deployed with 2 pool members.  App should be accessible on http://10.1.10.30.
 
-#. Run this playbook to teardown.
 
-   - Type ``ansible-playbook playbooks/iapp.yaml -e @creds.yaml --ask-vault-pass -e service_name="app4" -e service_ip="10.1.10.40" -e service_group="appservers" -e state="absent"``
+#. Run this playbook to teardown app.
+
+   - Type ``ansible-playbook -e @creds.yaml --ask-vault-pass playbooks/appseed.yaml -e state="absent"``
+
+#. Verify that app3_vs, pool and nodes should be deleted in BIG-IP GUI.
+
+   .. NOTE::
+
+     This playbook leverages a config seed file in vars/appseedinfo.yaml.  Simply modify this file to deploy a new service.
