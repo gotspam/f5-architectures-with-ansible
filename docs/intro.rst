@@ -27,6 +27,10 @@ Connect to lab
 .. image:: /_static/image002.png
    :height: 300px
 
+The Microsoft Remote Desktop Client can be used to access the jumpbox.  If the RDP client does not start automatically after clicking on the **RDP** link, you will need to start it manually.  
+If you do not have the RDP client installed, it is available from Microsoft `here <https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients>`_
+
+Going forward, all lab work will be completed through the Jump Host. 
 
 **Connecting to ansible host.**
 
@@ -61,3 +65,5 @@ Connect to lab
         - **External:** 10.1.10.252
         - **Internal:** 10.1.20.252
       - - ``root``/``default``
+
+
