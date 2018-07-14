@@ -53,6 +53,11 @@ Use the ``-e``, or ``--extra-vars`` argument of ``ansible-playbook``
 
    - Select ``Local Traffic -> Pools -> Pool Members -> app1_pl``
 
+.. NOTE::
+   This playbook relies on environment variables stored in the ``inventory/group_vars/bigips`` file.  This is where the ``bigip_env`` reference comes in.  Feel free to look at the file in question to get more information on the environment variables.
+   ::
+
+
 **Create pool member enable playbook**
 
 #. Create a playbook ``pmena.yaml``.
