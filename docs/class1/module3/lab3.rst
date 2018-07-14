@@ -80,3 +80,5 @@ You will create a playbook to deploy VS, Pools and associated Members using iApp
 
      **F5 iApps**, automate the configuration of advanced L4-L7 functionality. Deploying an iApp from an Ansible playbook means the Ansible admin can deliver advanced L4-L7 services without the requirement for F5 domain-specific knowledge.
      You take the JSON payload and convert to YAML using online tools like http://www.json2yaml.com.
+     For this particular exercise, the service is defined in the ``playbooks/f5.http.yaml`` file built leveraging the ``playbooks/f5.http.j2`` file. Parameters for the name, destination (VIP), and pool members are passed through the command line through the ``-e service_ip`` and ``-e service_group`` mantras.  The service_group refers to the app_servers defined in the ./inventory/hosts file. 
+     
