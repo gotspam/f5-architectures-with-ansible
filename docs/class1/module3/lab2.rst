@@ -3,11 +3,13 @@ Imperative - Create VS, Pool and Members using seed file
 
 You will create a consolidated playbook to deploy VS, Pools and associated Members.
 
+The definition of the virtual server is now declared in a separate var file and each configuration item is created discretely (imperative model).  Running the playbook will allow you to create a virtual server from end-to-end. 
+
 **Create consolidated playbook**
 
 #. Create a playbook ``appseed.yaml``.
 
-   - Type ``nano playbooks/app.yaml``
+   - Type ``nano playbooks/appseed.yaml``
    - Type the following into the ``playbooks/appseed.yaml`` file.
 
    .. code::
@@ -27,13 +29,13 @@ You will create a consolidated playbook to deploy VS, Pools and associated Membe
       environment: "{{ bigip_env }}"
 
       tasks:
-        - name: Adjust virtual server
+        - name: Create virtual server
           bigip_virtual_server:
-            name: "{{ vsname }}"
-            destination: "{{ vsip }}"
-            port: "{{ vsport }}"
+            name: "{{ vs_name }}"
+            destination: "{{ vs_ip }}"
+            port: "{{ vs_port }}"
             description: "Web App"
-            snat: "Automap"
+            snat: "{{ vs_snat }}"
             all_profiles:
               - "tcp-lan-optimized"
               - "clientssl"
@@ -41,26 +43,14 @@ You will create a consolidated playbook to deploy VS, Pools and associated Membe
               - "analytics"
             state: "{{ state }}"
 
-        - name: Adjust a VS
-          bigip_virtual_server:
-            name: "{{ vs_name }}"
-            destination: "{{ vs_ip }}"
-            port: "{{ vs_port }}"
-            snat: "{{ vs_snat }}"
-            all_profiles:
-              - "tcp-lan-optimized"
-              - "http"
-              - "analytics"
-            state: "{{ state }}"
-
-        - name: Adjust a pool
+        - name: Create a pool
           bigip_pool:
             name: "{{ pl_name }}"
             monitors: "{{ pl_monitor }}"
             lb_method: "{{ pl_lb }}"
             state: "{{ state }}"
 
-        - name: Add nodes
+        - name: Create nodes
           bigip_node:
             name: "{{ item.name }}"
             host: "{{ item.host }}"
@@ -88,6 +78,24 @@ You will create a consolidated playbook to deploy VS, Pools and associated Membe
           when: state == "present"
 
    - Ctrl x to save file.
+#. Create appseedinfo.yaml file
+
+   - Type ``nano var/appseedinfo.yaml``
+   - Type the following into the ``var/appseedinfo.yaml`` file.
+
+   .. code::
+   
+    pl_name: app3_pl
+    pl_monitor: /Common/tcp
+    pl_lb: round-robin
+    nd_ip1: 10.1.20.15
+    nd_ip2: 10.1.20.16
+    nd_port: 80
+    vs_name: app3_vs_443
+    vs_ip: 10.1.10.13
+    vs_port: 443
+    vs_snat: automap
+
 
 #. Run this playbook.
 
