@@ -72,6 +72,7 @@ The `ansible-vault` command has three subcommands that are frequently used.
 
         - debug: msg="{{ result.stdout_lines }}"
 
+
 #. Run this playbook.
 
    - Type ``ansible-playbook playbooks/cmd1.yml -e @creds.yaml --ask-vault-pass``
