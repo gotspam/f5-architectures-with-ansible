@@ -15,28 +15,18 @@ Connect to lab
 
 **Accessing the lab environment.**
 
-#. Open a browser and go to http://training.f5agility.com/<instructor_uri>/X (where X is your student number)
+#. Open a browser and go to http://training.f5agility.com.  Enter your Class# and Student# as provided by your instructor.
 
 #. Look for the xubuntu-jumpbox-vxx.  You will use the xubuntu jumpbox for all the labs. (see below)
 
 .. image:: /_static/image001.png
-   :height: 700px
+   :height: 300px
 
 #. You can click on **RDP** to RDP to the Xubuntu jumpbox or you can select the **CONSOLE** link and access the jumpbox via your browser.  **The CONSOLE link requires you turn off pop-up blockers.**
 
 .. image:: /_static/image002.png
    :height: 300px
 
-The Microsoft Remote Desktop Client can be used to access the jumpbox.  If the RDP client does not start automatically after clicking on the **RDP** link, you will need to start it manually.  
-If you do not have the RDP client installed, it is available from Microsoft `here <https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients>`_
-
-Going forward, all lab work will be completed through the Jump Host. 
-
-**Connecting to ansible host.**
-
-#. Launch putty and connect to ansible.
-
-#. Change directory to ``ansible/mod1``.
 
 .. list-table::
     :widths: 20 40 40
@@ -67,3 +57,22 @@ Going forward, all lab work will be completed through the Jump Host.
       - - ``root``/``default``
 
 
+**Connect to BIG-IP admin gui**
+
+#. From Jumpbox, open BIG-IP Admin GUI
+
+   - Open Chrome browser found on launchpad at bottom of screen
+   - Click on ``bigip01`` on favorites bar
+   - Login with username: ``admin`` and password: ``admin``
+
+**Connecting to ansible host.**
+
+#. From Jumpbox, SSH to Ansible host.
+
+   - Open Terminal Emulator Window found on launchpad at bottom of screen
+   - Type ``ssh root@10.1.1.150``
+   - Type ``yes`` when asked "Are you sure..."
+
+#. Change directory to **/root/ansible/mod1**.
+
+   - Type ``cd ansible/mod1``
