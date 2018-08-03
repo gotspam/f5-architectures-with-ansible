@@ -4,7 +4,6 @@ Class - |classname|
 
 This class covers the following topics:
 
-- Installation and configuration of Ansible
 - Basic |bip| administration with Ansible
 - Slightly more advanced Ansible usage
 - Debugging Ansible problems

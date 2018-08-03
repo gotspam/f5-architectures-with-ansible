@@ -15,24 +15,17 @@ Connect to lab
 
 **Accessing the lab environment.**
 
-#. Open a browser and go to http://training.f5agility.com/<instructor_uri>/X (where X is your student number)
+#. Open a browser and go to http://training.f5agility.com.  Enter your Class# and Student# as provided by your instructor.
 
 #. Look for the xubuntu-jumpbox-vxx.  You will use the xubuntu jumpbox for all the labs. (see below)
 
 .. image:: /_static/image001.png
-   :height: 700px
+   :height: 300px
 
 #. You can click on **RDP** to RDP to the Xubuntu jumpbox or you can select the **CONSOLE** link and access the jumpbox via your browser.  **The CONSOLE link requires you turn off pop-up blockers.**
 
 .. image:: /_static/image002.png
    :height: 300px
-
-
-**Connecting to ansible host.**
-
-#. Launch putty and connect to ansible.
-
-#. Change directory to ``ansible/mod1``.
 
 .. list-table::
     :widths: 20 40 40
@@ -61,3 +54,24 @@ Connect to lab
         - **External:** 10.1.10.252
         - **Internal:** 10.1.20.252
       - - ``root``/``default``
+
+
+**Connect to BIG-IP admin gui**
+
+#. From Jumpbox, open BIG-IP Admin GUI
+
+   - Open Chrome browser found on launchpad at bottom of screen
+   - Click on ``bigip01`` on favorites bar
+   - Login with username: ``admin`` and password: ``admin``
+
+**Connecting to ansible host.**
+
+#. From Jumpbox, SSH to Ansible host.
+
+   - Open Terminal Emulator Window found on launchpad at bottom of screen
+   - Type ``ssh root@10.1.1.150``
+   - Type ``yes`` when asked "Are you sure..."
+
+#. Change directory to **/root/ansible/mod1**.
+
+   - Type ``cd ansible/mod1``

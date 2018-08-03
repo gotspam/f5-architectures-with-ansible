@@ -3,6 +3,10 @@ Creating a pool on BIG-IP
 
 You need to create a pool on a BIG-IP.  Use the ``bigip_pool`` module.
 
+As a reminder, the following assumes that you are using RDP to access the Jump
+host provided for this lab, that you are SSH'd into the “Ansible”
+host and that the current working directory in that session is **/root/ansible/mod1/**.
+
 **Create a pool on a BIG-IP**
 
 #. Create a playbook ``pool.yaml``.
@@ -52,16 +56,24 @@ You need to create a pool on a BIG-IP.  Use the ``bigip_pool`` module.
    specify these values.
 
    The module has several more options, all of which can be seen at `this link`_.
-   I have reproduced them below. These are relevant to the 2.5 release of Ansible.
-
-   * ``description``
-   * ``lb_method``
-   * ``monitor_type``
-   * ``monitors``
-   * ``name``
-   * ``quorum``
-   * ``reselect_tries``
-   * ``service_down_action``
-   * ``slow_ramp_time``
 
    .. _this link: http://docs.ansible.com/ansible/latest/bigip_pool_module.html
+
+   By default, the changes made to the BIG-IP via its REST interface and the
+   Ansible playbooks are not persistent. It is important that you utilize the
+   ``bigip_config`` module to save that running config.  You can find more info `here`_.
+
+   .. _here: https://docs.ansible.com/ansible/2.4/bigip_config_module.html
+
+   Bonus playbook: - save the running config you may add the following snippet to the playbook:
+
+   ::
+
+    - name: Save the running configuration of the BIG-IP
+      bigip_config:
+        save: yes
+        server: 10.1.1.245
+        password: admin
+        user: admin
+        validate_certs: no
+      delegate_to: localhost
