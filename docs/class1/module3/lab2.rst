@@ -105,7 +105,7 @@ The definition of the virtual server is now declared in a separate var file and 
 
    .. hint::
 
-     You should see app3_vs deployed with 2 pool members.  App should be accessible on http://10.1.10.30.
+     You should see app3_vs deployed with 2 pool members.  App should be accessible on https://10.1.10.30.
 
 
 #. Run this playbook to teardown app.
