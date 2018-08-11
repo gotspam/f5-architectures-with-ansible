@@ -92,7 +92,7 @@ The definition of the virtual server is now declared in a separate var file and 
     nd_ip2: 10.1.20.16
     nd_port: 80
     vs_name: app3_vs
-    vs_ip: 10.1.10.13
+    vs_ip: 10.1.10.30
     vs_port: 443
     vs_snat: automap
 
