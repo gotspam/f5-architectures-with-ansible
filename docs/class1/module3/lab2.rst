@@ -85,6 +85,8 @@ The definition of the virtual server is now declared in a separate var file and 
 
    .. code::
 
+    ---
+
     pl_name: app3_pl
     pl_monitor: /Common/tcp
     pl_lb: round-robin
