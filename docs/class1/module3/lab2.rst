@@ -3,7 +3,7 @@ Imperative - Create VS, Pool and Members using seed file
 
 You will create a consolidated playbook to deploy VS, Pools and associated Members.
 
-The definition of the virtual server is now declared in a separate var file and each configuration item is created discretely (imperative model).  Running the playbook will allow you to create a virtual server from end-to-end. 
+The definition of the virtual server is now declared in a separate var file and each configuration item is created discretely (imperative model).  Running the playbook will allow you to create a virtual server from end-to-end.
 
 **Create consolidated playbook**
 
@@ -21,7 +21,7 @@ The definition of the virtual server is now declared in a separate var file and 
       gather_facts: False
       connection: local
       vars_files:
-        - ../vars/appseedinfo.yaml
+        - ../files/appinfo.yaml
 
       vars:
         state: "present"
@@ -78,20 +78,20 @@ The definition of the virtual server is now declared in a separate var file and 
           when: state == "present"
 
    - Ctrl x to save file.
-#. Create appseedinfo.yaml file
+#. Create appinfo.yaml file
 
-   - Type ``nano var/appseedinfo.yaml``
-   - Type the following into the ``var/appseedinfo.yaml`` file.
+   - Type ``nano files/appinfo.yaml``
+   - Type the following into the ``files/appinfo.yaml`` file.
 
    .. code::
-   
+
     pl_name: app3_pl
     pl_monitor: /Common/tcp
     pl_lb: round-robin
     nd_ip1: 10.1.20.15
     nd_ip2: 10.1.20.16
     nd_port: 80
-    vs_name: app3_vs_443
+    vs_name: app3_vs
     vs_ip: 10.1.10.13
     vs_port: 443
     vs_snat: automap
@@ -116,4 +116,4 @@ The definition of the virtual server is now declared in a separate var file and 
 
    .. NOTE::
 
-     This playbook leverages a config seed file in vars/appseedinfo.yaml.  Simply modify this file to deploy a new service.
+     This playbook leverages a config seed file in files/appinfo.yaml.  Simply modify this file to deploy a new service.
