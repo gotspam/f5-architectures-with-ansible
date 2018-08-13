@@ -75,7 +75,8 @@ The `ansible-vault` command has three subcommands that are frequently used.
 
 #. Run this playbook.
 
-   - Type ``ansible-playbook playbooks/cmd1.yml -e @creds.yaml --ask-vault-pass``
+   - Type ``ansible-playbook playbooks/cmd1.yaml -e @creds.yaml --ask-vault-pass``
+
 
    You will be prompted for vault password before executing the playbook.
    If successful, you should see config for virtual servers, pools and nodes.
