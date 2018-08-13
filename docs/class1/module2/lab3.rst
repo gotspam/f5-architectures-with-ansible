@@ -51,7 +51,7 @@ Use the ``-e``, or ``--extra-vars`` argument of ``ansible-playbook``
 
 #. Verify if pool member 10.1.20.12 is ``forced offline``
 
-   - Select ``Local Traffic -> Pools -> Pool Members -> app1_pl``
+   - Select ``Local Traffic -> Pools -> app1_pl -> Pool Members``
 
 .. NOTE::
    This playbook relies on environment variables stored in the ``inventory/group_vars/bigips`` file.  This is where the ``bigip_env`` reference comes in.  Feel free to look at the file in question to get more information on the environment variables.
@@ -103,7 +103,7 @@ Use the ``-e``, or ``--extra-vars`` argument of ``ansible-playbook``
 
 #. Verify if pool member 10.1.20.12 is ``enabled``
 
-   - Select ``Local Traffic -> Pools -> Pool Members -> app1_pl``
+   - Select ``Local Traffic -> Pools -> app1_pl -> Pool Members``
 
    .. NOTE::
 

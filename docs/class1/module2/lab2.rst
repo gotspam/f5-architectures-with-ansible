@@ -27,7 +27,7 @@ The `ansible-vault` command has three subcommands that are frequently used.
      bigip_pass: "admin"
 
 
-   Type ``esc key`` then ``wq!`` to save and quit the editor, the file will
+   Type ``esc key`` then ``:wq`` to save and quit the editor, the file will
    automatically be encrypted for you.
 
    - Type ``cat creds.yaml`` to ensure file is encrypted.
