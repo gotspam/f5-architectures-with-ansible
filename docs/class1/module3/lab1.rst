@@ -55,10 +55,10 @@ You will create a consolidated playbook to deploy VS, Pools and associated Membe
             lb_method: "ratio-member"
             state: "{{ state }}"
 
-        - name: Add nodes
+        - name: Create nodes
           bigip_node:
-            name: "{{ pmhost1 }}"
-            host: "{{ pmhost1}}"
+            name: "{{ item.name }}"
+            host: "{{ item.host 1}}"
             state: "{{ state }}"
           loop:
             - { name: "{{ pmhost1 }}", host: "{{ pmhost1 }}" }

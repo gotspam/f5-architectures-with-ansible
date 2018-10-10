@@ -27,7 +27,7 @@ The `ansible-vault` command has three subcommands that are frequently used.
      bigip_pass: "admin"
 
 
-   Type ``esc key`` then ``wq!`` to save and quit the editor, the file will
+   Type ``esc key`` then ``:wq`` to save and quit the editor, the file will
    automatically be encrypted for you.
 
    - Type ``cat creds.yaml`` to ensure file is encrypted.
@@ -44,33 +44,34 @@ The `ansible-vault` command has three subcommands that are frequently used.
 
    .. code::
 
-    ---
+     ---
 
-    - name: "Run a tmsh command"
-      hosts: bigips
-      gather_facts: False
-      connection: local
+     - name: "Run a tmsh command"
+       hosts: bigips
+       gather_facts: False
+       connection: local
 
-      vars:
-        validate_certs: no
-        server: 10.1.1.245
-        username: "{{ bigip_user }}"
-        password: "{{ bigip_pass }}"
+       vars:
+         validate_certs: no
+         server: 10.1.1.245
+         username: "{{ bigip_user }}"
+         password: "{{ bigip_pass }}"
 
-      tasks:
-        - name: View system version and LTM configuration
-          bigip_command:
-            commands:
-              - list /ltm virtual all
-              - list /ltm pool all
-              - list /ltm node all
-            server: "{{ server }}"
-            password: "{{ password }}"
-            user: "{{ username }}"
-            validate_certs: "{{ validate_certs }}"
-          register: result
+       tasks:
+         - name: View system version and LTM configuration
+           bigip_command:
+             commands:
+               - list /ltm virtual all
+               - list /ltm pool all
+               - list /ltm node all
+             server: "{{ server }}"
+             password: "{{ password }}"
+             user: "{{ username }}"
+             validate_certs: "{{ validate_certs }}"
+           register: result
 
-        - debug: msg="{{ result.stdout_lines }}"
+         - debug: msg="{{ result.stdout_lines }}"
+
 
 #. Run this playbook.
 

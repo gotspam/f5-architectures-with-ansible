@@ -36,7 +36,7 @@ host and that the current working directory in that session is **/root/ansible/m
 
 #. Verify BIG-IP results.
 
-   - Login to BIG-IP Admin GUI with username: ``admin`` and password: ``admin``
+   - Login to BIG-IP Admin GUI with username: ``admin`` and password: ``admin`` using any of the available browsers on the Jump Host.
    - Select **Local Traffic -> Pools**
 
    .. image:: /_static/image012.png
