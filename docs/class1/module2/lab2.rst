@@ -37,7 +37,7 @@ The `ansible-vault` command has three subcommands that are frequently used.
    .. image:: /_static/image024.png
        :height: 140px
 
-#. Copy ``playbooks/cmd.yaml`` to ``playbooks/cmd1.yaml`` and modify.
+#. Copy ``playbooks/cmd.yaml`` to ``playbooks/cmd1.yaml`` and delete vars_prompt section and replace with new vars section.
 
    - Type ``cp playbooks/cmd.yaml playbooks/cmd1.yaml``
    - Type ``nano playbooks/cmd1.yaml``

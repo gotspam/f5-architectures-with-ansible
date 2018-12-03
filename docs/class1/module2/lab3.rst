@@ -27,17 +27,14 @@ Use the ``-e``, or ``--extra-vars`` argument of ``ansible-playbook``
         pools: ""
         pmhost: ""
         pmport: ""
-        sstate: "disabled"
-        mstate: "disabled"
+        state: "disabled"
 
       environment: "{{ bigip_env }}"
 
       tasks:
         - name: Modify pool member state
           bigip_pool_member:
-            state: present
-            session_state: "{{ sstate }}"
-            monitor_state: "{{ mstate }}"
+            state: "{{ state }}"
             host: "{{ pmhost }}"
             port: "{{ pmport }}"
             pool: "{{ pool }}"
@@ -79,17 +76,14 @@ Use the ``-e``, or ``--extra-vars`` argument of ``ansible-playbook``
         pools: ""
         pmhost: ""
         pmport: ""
-        sstate: "enabled"
-        mstate: "enabled"
+        state: "enabled"
 
       environment: "{{ bigip_env }}"
 
       tasks:
         - name: Modify pool member state
           bigip_pool_member:
-            state: present
-            session_state: "{{ sstate }}"
-            monitor_state: "{{ mstate }}"
+            state: "{{ state }}"
             host: "{{ pmhost }}"
             port: "{{ pmport }}"
             pool: "{{ pool }}"
@@ -117,11 +111,11 @@ Use the ``-e``, or ``--extra-vars`` argument of ``ansible-playbook``
      related to something on your network. For example, your Playbook may be flexible
      enough to take a given ``region`` or ``cell``.
 
-     Bonus playbook: - modify sstate and mstate to "" and pass the variables via cli to achieve various states.
+     Bonus playbook: - modify pool member state by passing variables via cli to achieve various states; enabled, disabled and forced_offline
 
      ::
 
-      $ ansible-playbook playbooks/pmena.yaml -e @creds.yaml --ask-vault-pass -e pool="app1_pl" -e pmhost="10.1.20.12" -e pmport="80" -e mstate="enabled" -e sstate="disabled"
+      $ ansible-playbook playbooks/pmstate.yaml -e @creds.yaml --ask-vault-pass -e pool="app1_pl" -e pmhost="10.1.20.12" -e pmport="80" -e state="forced_offline"
 
       The Playbook would not need to change, but you could continually provide values to
       variables in the Playbook to keep from writing them into the actual Playbook itself.

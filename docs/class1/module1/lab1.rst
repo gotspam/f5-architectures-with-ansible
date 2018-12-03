@@ -63,9 +63,9 @@ host and that the current working directory in that session is **/root/ansible/m
    Ansible playbooks are not persistent. It is important that you utilize the
    ``bigip_config`` module to save that running config.  You can find more info `here`_.
 
-   .. _here: https://docs.ansible.com/ansible/2.4/bigip_config_module.html
+   .. _here: https://docs.ansible.com/ansible/latest/bigip_config_module.html
 
-   Bonus playbook: - save the running config you may add the following snippet to the playbook:
+   Bonus playbook: - save the running config you may add the following task to the playbook:
 
    ::
 
@@ -76,4 +76,3 @@ host and that the current working directory in that session is **/root/ansible/m
         password: admin
         user: admin
         validate_certs: no
-      delegate_to: localhost
