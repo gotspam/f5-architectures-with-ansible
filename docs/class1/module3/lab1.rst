@@ -1,123 +1,38 @@
-Imperative - Create VS, Pool and Members using playbook variables
-=================================================================
+Declarative - Deploy App using App Services (AS3)
+=================================================
 
-You will create a consolidated playbook to deploy VS, Pools and associated Members.
+You will create a playbook to deploy VS, Pools and associated Members using App Services.
 
-**Create consolidated playbook**
+**Create app services using playbook using AS3**
 
-#. Create a playbook ``app.yaml``.
-
-   - Type ``nano playbooks/app.yaml``
-   - Type the following into the ``playbooks/app.yaml`` file.
-
-   .. code::
-
-    ---
-
-    - name: "Imperative: Create new web app"
-      hosts: bigips
-      gather_facts: False
-      connection: local
-
-      vars:
-        vsname: "app2_vs"
-        vsip: "10.1.10.20"
-        vsport: "443"
-        plname: "app2_pl"
-        pmport: "80"
-        pmhost1: "10.1.20.13"
-        pmhost2: "10.1.20.14"
-        state: "present"
-
-      environment: "{{ bigip_env }}"
-
-      tasks:
-        - name: Adjust virtual server
-          bigip_virtual_server:
-            name: "{{ vsname }}"
-            destination: "{{ vsip }}"
-            port: "{{ vsport }}"
-            description: "Web App"
-            snat: "Automap"
-            all_profiles:
-              - "tcp-lan-optimized"
-              - "clientssl"
-              - "http"
-              - "analytics"
-            state: "{{ state }}"
-
-        - name: Adjust a pool
-          bigip_pool:
-            name: "{{ plname }}"
-            monitors: "/Common/http"
-            monitor_type: "and_list"
-            slow_ramp_time: "120"
-            lb_method: "ratio-member"
-            state: "{{ state }}"
-
-        - name: Create nodes
-          bigip_node:
-            name: "{{ item.name }}"
-            host: "{{ item.host 1}}"
-            state: "{{ state }}"
-          loop:
-            - { name: "{{ pmhost1 }}", host: "{{ pmhost1 }}" }
-            - { name: "{{ pmhost2 }}", host: "{{ pmhost2 }}" }
-
-        - name: Add nodes to pool
-          bigip_pool_member:
-            host: "{{ item.host }}"
-            port: "{{ pmport }}"
-            pool: "{{ plname }}"
-            state: "{{ state }}"
-          loop:
-            - { host: "{{ pmhost1 }}" }
-            - { host: "{{ pmhost2 }}" }
-          when: state == "present"
-
-        - name: Update a VS
-          bigip_virtual_server:
-            name: "{{ vsname }}"
-            pool: "{{ plname }}"
-            state: "{{ state }}"
-          when: state == "present"
-
-
-   - Ctrl x to save file.
-
-#. Run this playbook.
-
-   - Type ``ansible-playbook -e @creds.yaml --ask-vault-pass playbooks/app.yaml``
-
-   If successful, you should see similar results
-
-   .. image:: /_static/image011.png
-       :height: 180px
-
-#. Verify results in BIG-IP GUI.
-
-   .. hint::
-
-     You should see app2_vs deployed with 2 pool members.  App should be accessible on https://10.1.10.20.
-
-#. Run this playbook to teardown app.
-
-   - Type ``ansible-playbook -e @creds.yaml --ask-vault-pass playbooks/app.yaml -e state="absent"``
-
-#. Verify that app2_vs, pool and nodes should be deleted in BIG-IP GUI.
+#. Examine playbook ``service_4.yaml``
 
    .. NOTE::
 
-     Setting the ``state="absent"`` will delete the object.  For example within
-     the ``bigip_virtual_server`` module for virtual server state.
+     This playbook uses **roles** which contain their own vars, files and tasks. Grouping content by roles allows easy sharing of playbooks with other users.  You may examine the files in roles/service_4 directory.
 
-     If ``absent``, delete the virtual server if it exists.
-     If ``present``, create the virtual server and enable it.
-     If ``enabled``, enable the virtual server if it exists.
-     If ``disabled``, create the virtual server if needed, and set state to disabled.
+   - Type ``ls -R roles/service_4/``
+   - Type ``cat playbooks/service_4.yaml``
+   - Type ``cat roles/service_4/files/service_4.json``
+   - Type ``cat roles/service_4/tasks/main.yaml``
 
-     This playbook introduces environment and group variables, ``environment: "{{ bigip_env }}"`` references the /inventory/group_vars/bigips file.
+#. Run this playbook.
 
-     Additional info on variables and precedence can be seen at `this link`_.
+   - Type ``ansible-playbook playbooks/service_4.yaml -e @creds.yaml --ask-vault-pass``
 
-     .. _this link: https://docs.ansible.com/ansible/2.5/user_guide/playbooks_variables.html
+#. Verify results in BIG-IP GUI.
+#. From the BIG-IP GUI, select **Local Traffic->Virtual Servers** page.  Note there are no virtual servers listed.  You will need to select ``Service4`` partition on the top right to view the ``serviceMain`` service.
+#. Select **serviceMain** then **Security->Polocies** and note the ``service_4_WAF`` created.
+
+#. Run this playbook to teardown.
+
+   - Type ``ansible-playbook playbooks/destroy_all_services.yaml -e @creds.yaml --ask-vault-pass``
+
+#. Verify results in BIG-IP GUI.
+
+.. NOTE::
+
+  Roles are ways of automatically loading certain vars_files, tasks, and handlers based on a known file structure. Grouping content by roles also allows easy sharing of roles with other users.
+  Additional info on use of roles can be seen at `this link`_.
+
+  .. _this link: https://docs.ansible.com/ansible/2.5/user_guide/playbooks_reuse_roles.html

@@ -1,121 +1,38 @@
-Imperative - Create VS, Pool and Members using seed file
-========================================================
+Declarative - Deploy App with WAF Policy
+========================================
 
-You will create a consolidated playbook to deploy VS, Pools and associated Members.
+You will create a playbook to deploy VS, Pools and associated Members using App Services.
 
-The definition of the virtual server is now declared in a separate var file and each configuration item is created discretely (imperative model).  Running the playbook will allow you to create a virtual server from end-to-end.
+**Create app services using playbook using AS3**
 
-**Create consolidated playbook**
-
-#. Create a playbook ``appseed.yaml``.
-
-   - Type ``nano playbooks/appseed.yaml``
-   - Type the following into the ``playbooks/appseed.yaml`` file.
-
-   .. code::
-
-    ---
-
-    - name: "Imperative: Deploy / teardown a web app (VS, pool, nodes)"
-      hosts: bigips
-      gather_facts: False
-      connection: local
-      vars_files:
-        - ../files/appinfo.yaml
-
-      vars:
-        state: "present"
-
-      environment: "{{ bigip_env }}"
-
-      tasks:
-        - name: Create virtual server
-          bigip_virtual_server:
-            name: "{{ vs_name }}"
-            destination: "{{ vs_ip }}"
-            port: "{{ vs_port }}"
-            description: "Web App"
-            snat: "{{ vs_snat }}"
-            all_profiles:
-              - "tcp-lan-optimized"
-              - "clientssl"
-              - "http"
-              - "analytics"
-            state: "{{ state }}"
-
-        - name: Create a pool
-          bigip_pool:
-            name: "{{ pl_name }}"
-            monitors: "{{ pl_monitor }}"
-            lb_method: "{{ pl_lb }}"
-            state: "{{ state }}"
-
-        - name: Create nodes
-          bigip_node:
-            name: "{{ item.name }}"
-            host: "{{ item.host }}"
-            state: "{{ state }}"
-          loop:
-            - { name: "{{ nd_ip1 }}", host: "{{ nd_ip1 }}" }
-            - { name: "{{ nd_ip2 }}", host: "{{ nd_ip2 }}" }
-
-        - name: Add nodes to pool
-          bigip_pool_member:
-            host: "{{ item.host }}"
-            port: "{{ nd_port }}"
-            pool: "{{ pl_name }}"
-            state: "{{ state }}"
-          loop:
-            - { host: "{{ nd_ip1 }}" }
-            - { host: "{{ nd_ip2 }}" }
-          when: state == "present"
-
-        - name: Update a VS
-          bigip_virtual_server:
-            name: "{{ vs_name }}"
-            pool: "{{ pl_name }}"
-            state: "{{ state }}"
-          when: state == "present"
-
-   - Ctrl x to save file.
-#. Create appinfo.yaml file
-
-   - Type ``nano files/appinfo.yaml``
-   - Type the following into the ``files/appinfo.yaml`` file.
-
-   .. code::
-
-    ---
-
-    pl_name: app3_pl
-    pl_monitor: /Common/tcp
-    pl_lb: round-robin
-    nd_ip1: 10.1.20.15
-    nd_ip2: 10.1.20.16
-    nd_port: 80
-    vs_name: app3_vs
-    vs_ip: 10.1.10.30
-    vs_port: 443
-    vs_snat: automap
-
-
-#. Run this playbook.
-
-   - Type ``ansible-playbook -e @creds.yaml --ask-vault-pass playbooks/appseed.yaml``
-
-#. Verify results in BIG-IP GUI.
-
-   .. hint::
-
-     You should see app3_vs deployed with 2 pool members.  App should be accessible on https://10.1.10.30.
-
-
-#. Run this playbook to teardown app.
-
-   - Type ``ansible-playbook -e @creds.yaml --ask-vault-pass playbooks/appseed.yaml -e state="absent"``
-
-#. Verify that app3_vs, pool and nodes should be deleted in BIG-IP GUI.
+#. Examine playbook ``hackazon.yaml``
 
    .. NOTE::
 
-     This playbook leverages a config seed file in files/appinfo.yaml.  Simply modify this file to deploy a new service.
+     This playbook uses **roles** which contain their own vars, files and tasks. Grouping content by roles allows easy sharing of playbooks with other users.  You may examine the files in roles/hackazon directory.
+
+   - Type ``ls -R roles/hackazon/``
+   - Type ``cat playbooks/hackazon.yaml``
+   - Type ``cat roles/hackazon/files/hackazon.json``
+   - Type ``cat roles/hackazon/tasks/main.yaml``
+
+#. Run this playbook.
+
+   - Type ``ansible-playbook playbooks/hackazon.yaml -e @creds.yaml --ask-vault-pass``
+
+#. Verify results in BIG-IP GUI.
+#. From the BIG-IP GUI, select **Local Traffic->Virtual Servers** page.  Note there are no virtual servers listed.  You will need to select ``Hackazon`` partition on the top right to view the ``serviceMain`` service.
+#. Select **serviceMain** then **Security->Polocies** and note the ``Hackazon`` created.
+
+#. Run this playbook to teardown.
+
+   - Type ``ansible-playbook playbooks/destroy_all_services.yaml -e @creds.yaml --ask-vault-pass``
+
+#. Verify results in BIG-IP GUI.
+
+.. NOTE::
+
+  Roles are ways of automatically loading certain vars_files, tasks, and handlers based on a known file structure. Grouping content by roles also allows easy sharing of roles with other users.
+  Additional info on use of roles can be seen at `this link`_.
+
+  .. _this link: https://docs.ansible.com/ansible/2.5/user_guide/playbooks_reuse_roles.html

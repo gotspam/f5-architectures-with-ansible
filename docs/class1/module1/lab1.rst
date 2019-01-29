@@ -5,7 +5,7 @@ You need to create a pool on a BIG-IP.  Use the ``bigip_pool`` module.
 
 As a reminder, the following assumes that you are using RDP to access the Jump
 host provided for this lab, that you are SSH'd into the “Ansible”
-host and that the current working directory in that session is **/root/ansible/mod1/**.
+host and that the current working directory in that session is **/root/ansible/102/**.
 
 **Create a pool on a BIG-IP**
 
@@ -22,12 +22,12 @@ host and that the current working directory in that session is **/root/ansible/m
 
    .. HINT::
 
-      If you encounter syntax errors you can troubleshoot issues and/or the use of an online editor such as http://www.yamllint.com/
+      If you encounter syntax errors you can troubleshoot issues and/or the use of an online editor such as https://jsonformatter.org/yaml-validator
 
 
 #. Run this playbook.
 
-   - Type ``ansible-playbook playbooks/pool.yaml``
+   - Type `ansible-playbook playbooks/pool.yaml`
 
    If successful, you should see similar results
 
