@@ -12,35 +12,8 @@ module.
    - Type the following into the ``playbooks/vs.yaml`` file.
 
 
-     .. code::
-
-      ---
-
-      - name: Create a virtual server playbook
-        hosts: bigips
-        connection: local
-
-        vars:
-          server: 10.1.1.245
-          valid_certs: no
-          username: admin
-          password: admin
-
-        tasks:
-          - name: Create web server VIP
-            bigip_virtual_server:
-              description: app1 vip
-              destination: 10.1.10.10
-              password: "{{ password }}"
-              name: app1_vs
-              pool: app1_pl
-              port: 80
-              server: "{{ server }}"
-              snat: Automap
-              user: "{{ username }}"
-              profiles:
-                - http
-              validate_certs: "{{ valid_certs }}"
+     .. image:: /_static/image021.png
+       :height: 500px
 
    - Ctrl x to save file.
 

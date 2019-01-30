@@ -14,40 +14,8 @@ but re-use them throughout your tasks.  Use the ``bigip_node`` module.
    - Type the following into the ``playbooks/node.yaml`` file.
 
 
-     .. code::
-
-      ---
-
-      - name: Create nodes and add to pool
-        hosts: bigips
-        connection: local
-
-        vars:
-          valid_certs: no
-          username:  admin
-          password: admin
-          server: 10.1.1.245
-
-        tasks:
-            - name: Create node1
-              bigip_node:
-                  host: "10.1.20.11"
-                  name: "10.1.20.11"
-                  password: "{{ password }}"
-                  server: "{{ server }}"
-                  user: "{{ username }}"
-                  validate_certs: "{{ valid_certs }}"
-              delegate_to: localhost
-
-            - name: Create node2
-              bigip_node:
-                  host: "10.1.20.12"
-                  name: "10.1.20.12"
-                  password: "{{ password }}"
-                  server: "{{ server }}"
-                  user: "{{ username }}"
-                  validate_certs: "{{ valid_certs }}"
-              delegate_to: localhost
+     .. image:: /_static/image013.png
+       :height: 500px
 
    - Ctrl x to save file.
 

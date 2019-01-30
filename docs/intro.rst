@@ -73,6 +73,6 @@ Connect to lab
    - Type ``ssh root@10.1.1.150``
    - Type ``yes`` when asked "Are you sure..."
 
-#. Change directory to **/root/ansible/102**.
+#. Change directory to **/root/ansible/mod1**.
 
-   - Type ``cd ansible/102``
+   - Type ``cd ansible/mod1``

@@ -12,35 +12,8 @@ You will select a node which you will assign to a pool ``app1_pl``.  Use the
 
    - Type the following into the ``playbooks/member.yaml`` file.
 
-     .. code::
-
-      ---
-
-      - name: Add Pool Members to Pool
-        hosts: bigips
-        connection: local
-
-        vars:
-          valid_certs: no
-          username: admin
-          password: admin
-          server: 10.1.1.245
-
-        tasks:
-            - name: Add nodes to pool
-              bigip_pool_member:
-                description: "app1 web servers"
-                host: "{{ item.host }}"
-                password: "{{ password }}"
-                pool: "app1_pl"
-                port: "80"
-                server: "{{ server }}"
-                user: "{{ username }}"
-                validate_certs: "{{ valid_certs }}"
-              delegate_to: localhost
-              loop:
-                - { host: 10.1.20.11 }
-                - { host: 10.1.20.12 }
+     .. image:: /_static/image016.png
+         :height: 500px
 
    - Ctrl x to save file.
 
@@ -58,7 +31,28 @@ You will select a node which you will assign to a pool ``app1_pl``.  Use the
    - Select **Local Traffic -> Pools -> app1_p1 -> Members**
 
    .. image:: /_static/image018.png
+       :height: 180px
+
+#. Add another pool member to pool ``app1_pl``.
+
+   - Type ``nano playbooks/member.yaml``
+   - Add node ``10.1.20.12`` as shown in the image below.
+
+   .. image:: /_static/image019.png
+       :height: 100px
+
+   - Ctrl x to save file.
+
+#. Run this playbook.
+
+   - Type ``ansible-playbook playbooks/member.yaml``
+
+   If successful, you should see similar results
+
+   .. image:: /_static/image020.png
        :height: 200px
+
+#. Verify BIG-IP results.
 
    .. NOTE::
 

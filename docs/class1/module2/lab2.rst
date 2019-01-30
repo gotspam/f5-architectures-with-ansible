@@ -1,127 +1,86 @@
-Deploy BIG-IP App Services
-==========================
+Securing and passing credentials
+================================
 
-You will create a consolidated playbook to deploy VS, Pools and associated Members.
+You need to store passwords for use in Ansible.  Use ``ansible-vault``.
+The `ansible-vault` command has three subcommands that are frequently used.
 
+* create
+* edit
 
-#. Create a playbook ``hack11.yaml``.
+**Create vault for credentials**
 
-   - Type ``nano playbooks/hack11.yaml``
-   - Type the following into the ``playbooks/hack11.yaml`` file.
+#. Create a vault ``creds.yaml``.
+
+   - Type ``ansible-vault create creds.yaml``
+
+   Use ``create`` to create the initial files that will be vault encrypted.
+   Vault will prompt you for a password. For the purposes of this lab enter
+   ``password`` . It will then open up a text editor (vi)
+   for you to write data to it. Data of any form can be written, but text is
+   usually the format that is used.
+
+   - Type ``i`` then enter the following in the editor.
 
    .. code::
 
-    ---
+     bigip_user: "admin"
+     bigip_pass: "admin"
 
-    - name: "Deploy / teardown a web app (VS, pool, nodes)"
-      hosts: bigips
-      gather_facts: False
-      connection: local
 
-      vars:
-        vs_name: "hack11"
-        vs_ip: "10.1.10.11"
-        vs_port: "443"
-        vs_snat: "automap"
-        pl_name: "hack11_pl"
-        pl_monitor: "/Common/http"
-        pl_lb: "round-robin"
-        nd_port: "80"
-        nd_ip1: "10.1.20.17"
-        nd_ip2: "10.1.20.20"
-        state: "present"
-        username: admin
-        password: admin
-        server: 10.1.1.245
-        valid_certs: no
+   Type ``esc key`` then ``:wq`` to save and quit the editor, the file will
+   automatically be encrypted for you.
 
-      tasks:
-        - name: Adjust a VS
-          bigip_virtual_server:
-            name: "{{ vs_name }}"
-            destination: "{{ vs_ip }}"
-            port: "{{ vs_port }}"
-            snat: "{{ vs_snat }}"
-            all_profiles:
-              - "tcp-lan-optimized"
-              - "clientssl"
-              - "http"
-              - "analytics"
-            state: "{{ state }}"
-            password: "{{ password }}"
-            server: "{{ server }}"
-            user: "{{ username }}"
-            validate_certs: "{{ valid_certs }}"
+   - Type ``cat creds.yaml`` to ensure file is encrypted.
 
-        - name: Adjust a pool
-          bigip_pool:
-            name: "{{ pl_name }}"
-            monitors: "{{ pl_monitor }}"
-            lb_method: "{{ pl_lb }}"
-            state: "{{ state }}"
-            password: "{{ password }}"
-            server: "{{ server }}"
-            user: "{{ username }}"
-            validate_certs: "{{ valid_certs }}"
+   If successful, you should see similar results
 
-        - name: Add nodes
-          bigip_node:
-            name: "{{ item.name }}"
-            host: "{{ item.host }}"
-            state: "{{ state }}"
-            password: "{{ password }}"
-            server: "{{ server }}"
-            user: "{{ username }}"
-            validate_certs: "{{ valid_certs }}"
-          loop:
-            - { name: "{{ nd_ip1 }}", host: "{{ nd_ip1 }}" }
-            - { name: "{{ nd_ip2 }}", host: "{{ nd_ip2 }}" }
+   .. image:: /_static/image024.png
+       :height: 140px
 
-        - name: Add nodes to pool
-          bigip_pool_member:
-            host: "{{ item.host }}"
-            port: "{{ nd_port }}"
-            pool: "{{ pl_name }}"
-            state: "{{ state }}"
-            password: "{{ password }}"
-            server: "{{ server }}"
-            user: "{{ username }}"
-            validate_certs: "{{ valid_certs }}"
-          loop:
-            - { host: "{{ nd_ip1 }}" }
-            - { host: "{{ nd_ip2 }}" }
-          when: state == "present"
+#. Copy ``playbooks/cmd.yaml`` to ``playbooks/cmd1.yaml`` and delete vars_prompt section and replace with new vars section.
 
-        - name: Update a VS
-          bigip_virtual_server:
-            name: "{{ vs_name }}"
-            pool: "{{ pl_name }}"
-            state: "{{ state }}"
-            password: "{{ password }}"
-            server: "{{ server }}"
-            user: "{{ username }}"
-            validate_certs: "{{ valid_certs }}"
-          when: state == "present"
+   - Type ``cp playbooks/cmd.yaml playbooks/cmd1.yaml``
+   - Type ``nano playbooks/cmd1.yaml``
 
-   - Ctrl x to save file.
+   .. code::
+
+     ---
+
+     - name: "Run a tmsh command"
+       hosts: bigips
+       gather_facts: False
+       connection: local
+
+       vars:
+         validate_certs: no
+         server: 10.1.1.245
+         username: "{{ bigip_user }}"
+         password: "{{ bigip_pass }}"
+
+       tasks:
+         - name: View system version and LTM configuration
+           bigip_command:
+             commands:
+               - list /ltm virtual all
+               - list /ltm pool all
+               - list /ltm node all
+             server: "{{ server }}"
+             password: "{{ password }}"
+             user: "{{ username }}"
+             validate_certs: "{{ validate_certs }}"
+           register: result
+
+         - debug: msg="{{ result.stdout_lines }}"
+
 
 #. Run this playbook.
 
-   - Type ``ansible-playbook playbooks/hack11.yaml``
+   - Type ``ansible-playbook playbooks/cmd1.yml -e @creds.yaml --ask-vault-pass``
 
-#. Verify results in BIG-IP GUI.
+   You will be prompted for vault password before executing the playbook.
+   If successful, you should see config for virtual servers, pools and nodes.
 
-   - Select **Local Traffic -> Virtual Servers -> Virtual Server List**
+.. NOTE::
 
-   .. image:: /_static/image032.png
-         :height: 100px
-
-   - Select **Local Traffic -> Pools -> Pool Members -> hack11_pl**
-
-   .. image:: /_static/image033.png
-         :height: 140px
-
-#. Browse to ``https://10.1.10.11`` to test Application.  Hackazon image should be **green**.
-
-   .. image:: /_static/image034.png
-          :height: 300px
+  Use ``ansible-vault edit creds.yaml`` to modify the vault.  You will be prompted
+  for vault password before editor opens vault file.

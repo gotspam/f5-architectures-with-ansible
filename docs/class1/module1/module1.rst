@@ -1,5 +1,5 @@
-Lab 1 – Basic |bip| administration with Ansible
-===============================================
+Module – Basic |bip| administration with Ansible
+================================================
 
 This module will include exercises to do basic administrative tasks on the BIG-IP.
 

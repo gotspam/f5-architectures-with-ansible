@@ -1,60 +1,123 @@
-Declarative - Deploy App using App Services (AS3)
-=================================================
+Imperative - Create VS, Pool and Members using playbook variables
+=================================================================
 
-You will create a playbook to deploy VS, Pools and associated Members using App Services.
-Intro to AS3
-https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/faq.html
+You will create a consolidated playbook to deploy VS, Pools and associated Members.
 
-**Create app services using playbook using AS3**
+**Create consolidated playbook**
 
-#. Examine playbook ``playbooks/hackazon.yaml``
+#. Create a playbook ``app.yaml``.
 
-   .. NOTE::
+   - Type ``nano playbooks/app.yaml``
+   - Type the following into the ``playbooks/app.yaml`` file.
 
-     This playbook uses **roles** which contain their own vars, files and tasks. Grouping content by roles allows easy sharing of playbooks with other users.  You may examine the files in roles/hackazon directory.
+   .. code::
 
-   - Type ``ls -R roles/hackazon/``
-   - Type ``nano playbooks/hackazon.yaml``
-   - Type ``nano roles/hackazon/files/hackazon.json``
-   - Type ``nano roles/hackazon/tasks/main.yaml``
+    ---
+
+    - name: "Imperative: Create new web app"
+      hosts: bigips
+      gather_facts: False
+      connection: local
+
+      vars:
+        vsname: "app2_vs"
+        vsip: "10.1.10.20"
+        vsport: "443"
+        plname: "app2_pl"
+        pmport: "80"
+        pmhost1: "10.1.20.13"
+        pmhost2: "10.1.20.14"
+        state: "present"
+
+      environment: "{{ bigip_env }}"
+
+      tasks:
+        - name: Adjust virtual server
+          bigip_virtual_server:
+            name: "{{ vsname }}"
+            destination: "{{ vsip }}"
+            port: "{{ vsport }}"
+            description: "Web App"
+            snat: "Automap"
+            all_profiles:
+              - "tcp-lan-optimized"
+              - "clientssl"
+              - "http"
+              - "analytics"
+            state: "{{ state }}"
+
+        - name: Adjust a pool
+          bigip_pool:
+            name: "{{ plname }}"
+            monitors: "/Common/http"
+            monitor_type: "and_list"
+            slow_ramp_time: "120"
+            lb_method: "ratio-member"
+            state: "{{ state }}"
+
+        - name: Create nodes
+          bigip_node:
+            name: "{{ item.name }}"
+            host: "{{ item.host 1}}"
+            state: "{{ state }}"
+          loop:
+            - { name: "{{ pmhost1 }}", host: "{{ pmhost1 }}" }
+            - { name: "{{ pmhost2 }}", host: "{{ pmhost2 }}" }
+
+        - name: Add nodes to pool
+          bigip_pool_member:
+            host: "{{ item.host }}"
+            port: "{{ pmport }}"
+            pool: "{{ plname }}"
+            state: "{{ state }}"
+          loop:
+            - { host: "{{ pmhost1 }}" }
+            - { host: "{{ pmhost2 }}" }
+          when: state == "present"
+
+        - name: Update a VS
+          bigip_virtual_server:
+            name: "{{ vsname }}"
+            pool: "{{ plname }}"
+            state: "{{ state }}"
+          when: state == "present"
+
+
+   - Ctrl x to save file.
 
 #. Run this playbook.
 
-   - Type ``ansible-playbook playbooks/hackazon.yaml``
+   - Type ``ansible-playbook -e @creds.yaml --ask-vault-pass playbooks/app.yaml``
 
-   This playbook will prompt for username and password.  Enter ``admin`` for both.
+   If successful, you should see similar results
 
-#. Verify results in BIG-IP GUI.
-#. From the BIG-IP GUI, select **Local Traffic->Network Map** page.  Note there are no virtual server listed.  You will need to select ``Hackazon`` partition on the top right to view the ``serviceMain`` service.
-
-   .. image:: /_static/image040.png
-         :height: 200px
-
-#. Add WAF Security Policy
-
-   - Select **serviceMain** then **Security->Polocies**
-   - Select **foo-policy** then **update**
-
-**Add Pool Member using AS3**
-
-#. Examine then run playbook ``playbooks/hack_member.yaml``
-
-   - Type ``nano playbooks/hack_member.yaml`` and note this is using **PATCH** method
-   - Type ``ansible-playbook playbooks/hack_member.yaml -e @creds.yaml --ask-vault-pass``
-
-#. Verify pool member was added to ``hack_pl``
-
-#. Re-run playbook ``playbooks/hackazon.yaml`` and note addition of policy and pool member is no longer associated.
-
-#. Run this playbook to teardown.
-
-   - Type ``ansible-playbook playbooks/destroy_all_services.yaml -e @creds.yaml --ask-vault-pass``
+   .. image:: /_static/image011.png
+       :height: 180px
 
 #. Verify results in BIG-IP GUI.
 
-.. NOTE::
+   .. hint::
 
-  Roles are ways of automatically loading certain vars_files, tasks, and handlers based on a known file structure. Grouping content by roles also allows easy sharing of roles with other users.
-  Additional info on use of roles can be seen at `this link`_.
+     You should see app2_vs deployed with 2 pool members.  App should be accessible on https://10.1.10.20.
 
-  .. _this link: https://docs.ansible.com/ansible/2.5/user_guide/playbooks_reuse_roles.html
+#. Run this playbook to teardown app.
+
+   - Type ``ansible-playbook -e @creds.yaml --ask-vault-pass playbooks/app.yaml -e state="absent"``
+
+#. Verify that app2_vs, pool and nodes should be deleted in BIG-IP GUI.
+
+   .. NOTE::
+
+     Setting the ``state="absent"`` will delete the object.  For example within
+     the ``bigip_virtual_server`` module for virtual server state.
+
+     If ``absent``, delete the virtual server if it exists.
+     If ``present``, create the virtual server and enable it.
+     If ``enabled``, enable the virtual server if it exists.
+     If ``disabled``, create the virtual server if needed, and set state to disabled.
+
+     This playbook introduces environment and group variables, ``environment: "{{ bigip_env }}"`` references the /inventory/group_vars/bigips file.
+
+     Additional info on variables and precedence can be seen at `this link`_.
+
+     .. _this link: https://docs.ansible.com/ansible/2.5/user_guide/playbooks_variables.html
